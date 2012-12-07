@@ -1,0 +1,6 @@
+#!/bin/bash
+
+ghc -O2 -o ./binaries/$1 ./$1.hs
+strip ./binaries/$1
+rm *.hi
+rm *.o
