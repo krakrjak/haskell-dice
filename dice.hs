@@ -1,21 +1,17 @@
 import System.Random
 import System.Environment
-import Control.Monad(replicateM_)
+import Control.Monad
 
 handleArgs :: [String] -> [Int]
-handleArgs [x,y] = handleArgs [x,y,"1"]
-handleArgs [x,y,z] = map (\n -> read n :: Int) [x,y,z]
+handleArgs [x,y] = handleArgs [x, y, "1"]
+handleArgs [x,y,z] = map read [x, y, z]
 handleArgs _ = error "Too few (or many!) arguments."
 
-tossDice :: (RandomGen g) => g -> Int -> Int -> [Int]
-tossDice g x y = take x $ randomRs (1, y) g
+tossDice :: (RandomGen g) => Int -> Int -> g -> [Int]
+tossDice x y = take x . randomRs (1, y)
 
 main = do
-  args <- getArgs
-  let [x,y,z] = handleArgs args
-  replicateM_ z (do
-    gen <- newStdGen
-    let r = tossDice gen x y
-    let s = sum r
-
-    putStrLn $ "Result: " ++ show s ++ "\tDice: " ++ show r)
+  [x,y,z] <- liftM handleArgs getArgs
+  replicateM_ z $ do
+    r <- liftM (tossDice x y) newStdGen
+    putStrLn $ "Result: " ++ show (sum r) ++ "\tDice: " ++ show r
