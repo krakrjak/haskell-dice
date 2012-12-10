@@ -10,6 +10,7 @@ handleArgs _ = error "Too few (or many!) arguments."
 tossDice :: (RandomGen g) => Int -> Int -> g -> [Int]
 tossDice x y = take x . randomRs (1, y)
 
+main :: IO ()
 main = do
   [x, y, z] <- liftM handleArgs getArgs
   replicateM_ z $ do
